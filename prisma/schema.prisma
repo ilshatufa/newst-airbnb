@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Room {
+  id        Int        @id @default(autoincrement())
+  number    Int        @unique
+  view      RoomView   @default(PARK)
+  type      RoomType   @default(ONEBEDROOM)
+  schedule  Schedule[]
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+
+  @@index([number])
+  @@map("rooms")
+}
+
+model Schedule {
+  id        Int            @id @default(autoincrement())
+  roomId    Int            @map("room_id")
+  status    ScheduleStatus @default(OPEN)
+  room      Room           @relation(fields: [roomId], references: [id])
+  date      DateTime       @db.Date
+  createdAt DateTime       @default(now()) @map("created_at")
+  updatedAt DateTime       @updatedAt @map("updated_at")
+
+  @@index([roomId, date])
+  @@map("schedule")
+}
+
+enum ScheduleStatus {
+  DONE
+  CANCEL
+  OPEN
+}
+
+enum RoomView {
+  SEA
+  PARK
+  POOL
+}
+
+enum RoomType {
+  ONEBEDROOM
+  TWOBEDROOM
+  FAMILYSUITE
+  LUX
+}
