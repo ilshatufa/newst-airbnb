@@ -2,6 +2,13 @@
 /dist
 /node_modules
 
+# IDEs and editors
+/.idea
+
+
+/questions.txt
+.env
+
 # Logs
 logs
 *.log
